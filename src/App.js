@@ -1,23 +1,79 @@
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import {getUsers} from './actions/index'
 import './App.css';
 
 function App() {
+  const [state, setState] = useState({
+    count:4, 
+    theme: 'blue', 
+    ressourceTypes: 'posts',
+    windowWidth: window.innerWidth
+  });
+
+  const count = state.count;
+  const theme = state.theme;
+  const ressourceTypes = state.ressourceTypes;
+  const windowWidth = state.windowWidth;
+
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.users);
+
+  console.log('render');
+
+  function decrement(){
+    setState(prevState => {
+      return {...prevState, count: prevState.count - 1}
+    })
+  }
+
+  function increment(){
+    setState(newCount => {
+      return {...newCount, count: newCount.count + 1}
+    })
+  }
+
+  function setRessourceType(name){
+    setState(prevState => {
+      return {ressourceTypes: name};
+    })
+  }
+
+  const handleWindow = () => {
+    setState(prevState => {
+      return {windowWidth: window.innerWidth}
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleWindow);
+    
+    dispatch(getUsers());
+    
+    fetch(`https://jsonplaceholder.typicode.com/${ressourceTypes}`)
+      .then(response => response.json())
+      .then(json => console.log(json))
+    console.log('render ressource type was changed ')
+  }, [ressourceTypes])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>First app</h1>
+      <button onClick={decrement}>-</button>
+      <span>{count}</span>
+      <span>{theme}</span>
+      <button onClick={increment}>+</button>
+      <button onClick={() => setRessourceType('posts')}>Posts</button>
+      <button onClick={() => setRessourceType('users')}>Users</button>
+      <button onClick={() => setRessourceType('comments')}>Comments</button>
+      <h1>{ressourceTypes}</h1>
+      <h1>{windowWidth}</h1>
+      <h1>Redux saga api</h1>
+      {
+        users.map((user) => <h1 key={user.id}>{user.name}</h1>)
+      }
+
     </div>
   );
 }
