@@ -1,5 +1,3 @@
-
-
 const initialState = {
     users: [],
     loading: false,
@@ -14,6 +12,12 @@ const initialState = {
         return { ...state, loading: false, users: action.users };
       case "GET_USERS_FAILED":
         return { ...state, loading: false, error: action.message };
+      case "POST_USER_REQUESTED":
+        return { ...state, loading: false };
+      case "DELETE_USER_REQUESTED":
+        return { ...state, loading: false };
+      case "UPDATE_USER_REQUESTED":
+        return { ...state, loading: false };
       default:
         return state;
     }

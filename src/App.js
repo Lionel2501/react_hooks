@@ -1,79 +1,34 @@
-import React, {useState, useEffect} from 'react';
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-import {getUsers} from './actions/index'
-import './App.css';
+import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+import MockApi from './components/MockApi';
+import TypiCode from './components/TypiCode';
+import HooksTest from './components/HooksTest';
+import Addform from './components/AddForm';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Container from '@mui/material/Container';
 
 function App() {
-  const [state, setState] = useState({
-    count:4, 
-    theme: 'blue', 
-    ressourceTypes: 'posts',
-    windowWidth: window.innerWidth
-  });
-
-  const count = state.count;
-  const theme = state.theme;
-  const ressourceTypes = state.ressourceTypes;
-  const windowWidth = state.windowWidth;
-
-  const dispatch = useDispatch();
-  const users = useSelector((state) => state.users.users);
-
-  console.log('render');
-
-  function decrement(){
-    setState(prevState => {
-      return {...prevState, count: prevState.count - 1}
-    })
-  }
-
-  function increment(){
-    setState(newCount => {
-      return {...newCount, count: newCount.count + 1}
-    })
-  }
-
-  function setRessourceType(name){
-    setState(prevState => {
-      return {ressourceTypes: name};
-    })
-  }
-
-  const handleWindow = () => {
-    setState(prevState => {
-      return {windowWidth: window.innerWidth}
-    })
-  }
-
-  useEffect(() => {
-    window.addEventListener('resize', handleWindow);
-    
-    dispatch(getUsers());
-    
-    fetch(`https://jsonplaceholder.typicode.com/${ressourceTypes}`)
-      .then(response => response.json())
-      .then(json => console.log(json))
-    console.log('render ressource type was changed ')
-  }, [ressourceTypes])
 
   return (
     <div className="App">
-      <h1>First app</h1>
-      <button onClick={decrement}>-</button>
-      <span>{count}</span>
-      <span>{theme}</span>
-      <button onClick={increment}>+</button>
-      <button onClick={() => setRessourceType('posts')}>Posts</button>
-      <button onClick={() => setRessourceType('users')}>Users</button>
-      <button onClick={() => setRessourceType('comments')}>Comments</button>
-      <h1>{ressourceTypes}</h1>
-      <h1>{windowWidth}</h1>
-      <h1>Redux saga api</h1>
-      {
-        users.map((user) => <h1 key={user.id}>{user.name}</h1>)
-      }
-
+      <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+      <h1>React Hooks</h1>
+        <Link to="mockapi" component="button" variant="body2">Mock Api</Link>
+        <Link to="hookstest">Hooks Test</Link>
+        <Link to="typicode">Typi Code</Link>
+        </Toolbar>
+      </Container>
+    </AppBar>
+    
+    <Routes>
+      <Route path="mockapi" element={ <MockApi/> } />
+      <Route path="typicode" element={ <TypiCode/> } />
+      <Route path="hookstest" element={ <HooksTest/> } />
+      <Route path="addform" element={ <Addform/> } />
+    </Routes>
     </div>
   );
 }
